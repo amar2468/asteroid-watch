@@ -1,12 +1,16 @@
 import './App.css';
 
+import Home from './pages/Home';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 function App() {
   return (
-    <div>
-      <h1>Asteroid Watch</h1>
-
-      <p>Check today's near-Earth asteroid data.</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
