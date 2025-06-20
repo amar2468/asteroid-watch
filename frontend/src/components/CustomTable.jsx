@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import TextField from '@mui/material/TextField';
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 100 },
@@ -19,10 +20,12 @@ const columns = [
   { id: 'orbit_body', label: 'Orbit', minWidth: 100 },
 ];
 
-const CustomTable = ({ retrievedNeoData, numberOfNeos }) => {
+const CustomTable = ({ retrievedNeoData, numberOfNeos, loading }) => {
     function createData(id, name, diameter, hazardous, approachDate, velocity, miss_distance, orbit_body) {
         return { id, name, diameter, hazardous, approachDate, velocity, miss_distance, orbit_body };
     }
+
+    const [searchTerm, setSearchTerm] = React.useState("");
 
     const rows = Object.values(retrievedNeoData)
         .flat() // Makes it a single array
@@ -38,6 +41,14 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos }) => {
                 neoRow.close_approach_data[0].orbiting_body,
             )
         );
+    
+    const allRows = rows.filter((row) => 
+        Object.values(row).some((value) => 
+            String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    );
+    
+    
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -53,6 +64,20 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos }) => {
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+            <TextField
+                label="Search"
+
+                variant="outlined"
+
+                margin="normal"
+
+                value={searchTerm}
+
+                onChange={(e) => setSearchTerm(e.target.value)}
+
+                disabled={loading}
+            />
+
             <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
                 <TableHead >
@@ -69,7 +94,7 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos }) => {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {rows
+                {allRows
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
                     return (
