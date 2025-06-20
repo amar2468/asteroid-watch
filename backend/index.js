@@ -12,6 +12,8 @@ require('dotenv').config();
 // Create an Express application
 const app = express();
 
+app.use(express.json());
+
 // Enable CORS so frontend (on a different port) can access the backend
 app.use(cors());
 
