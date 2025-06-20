@@ -7,30 +7,35 @@ const axios = require('axios');
 // Imported Router, which is needed when calling the routes below.
 const router = express.Router();
 
-// When the /api/asteroids route is called, we will make an API call to retrieve the NEO data from a specific date.
-router.get('/', async (req, res) => {
-    const date = req.query.date;
+router.post('/', async (req, res) => {
+    const { startDate, endDate } = req.body;
 
     const apiKey = process.env.NASA_API_KEY;
 
-    if (!date) {
-        return res.status(400).json({ error: 'Date is required.'});
+    // If the start date is missing, throw a 400 error message about it.
+    if (!startDate) {
+        return res.status(400).json({ error: 'Start date is required.'});
+    }
+
+    // If the end date is missing, throw a 400 error message about it.
+    if (!endDate) {
+        return res.status(400).json({ error: 'End date is required.'});
     }
 
     try {
-        const neoURL = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${date}&end_date=${date}&api_key=${apiKey}`;
+        const neoURL = `https://api.nasa.gov/neo/rest/v1/feed?start_date=${startDate}&end_date=${endDate}&api_key=${apiKey}`;
 
         const response = await axios.get(neoURL);
 
         const neos = response.data;
 
-        res.json({ neos });
+        return res.status(200).json({ data: neos });
     }
 
     catch (error) {
         console.log(error.message);
 
-        res.status(500).json({ error: 'Failed to fetch NEO data' });
+        return res.status(500).json({ error: 'Failed to fetch NEO data' });
     }
 });
 
