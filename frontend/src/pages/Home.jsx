@@ -174,7 +174,7 @@ const Home = () => {
 
                     color="primary"
 
-                    sx={{ mt: 5, mb: 5 }}
+                    sx={{ mt: 5, mb: 5, borderRadius: "25px" }}
 
                     onClick={searchForNeos}
 
