@@ -8,6 +8,8 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 100 },
@@ -63,7 +65,7 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos, loading }) => {
     };
 
     return (
-        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <>
             <TextField
                 label="Search"
 
@@ -76,56 +78,72 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos, loading }) => {
                 onChange={(e) => setSearchTerm(e.target.value)}
 
                 disabled={loading}
+
+                sx={{ '& .MuiOutlinedInput-root': {
+                    borderRadius: "25px",
+                }, }}
+
+                slotProps={{
+                    input: {
+                    startAdornment: (
+                        <InputAdornment position="start">
+                        <SearchIcon />
+                        </InputAdornment>
+                    ),
+                    },
+                }}
             />
 
-            <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader aria-label="sticky table">
-                <TableHead >
-                <TableRow>
-                    {columns.map((column) => (
-                    <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: "#f7f7f7" }}
-                    >
-                        {column.label}
-                    </TableCell>
-                    ))}
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {allRows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                    return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                        {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                            <TableCell key={column.id} align={column.align}>
-                                {column.format && typeof value === 'number'
-                                ? column.format(value)
-                                : value}
-                            </TableCell>
-                            );
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer sx={{ maxHeight: 440 }}>
+                <Table stickyHeader aria-label="sticky table">
+                    <TableHead >
+                    <TableRow>
+                        {columns.map((column) => (
+                        <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: "#f7f7f7" }}
+                        >
+                            {column.label}
+                        </TableCell>
+                        ))}
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {allRows
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row) => {
+                        return (
+                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                            {columns.map((column) => {
+                                const value = row[column.id];
+                                return (
+                                <TableCell key={column.id} align={column.align}>
+                                    {column.format && typeof value === 'number'
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                                );
+                            })}
+                            </TableRow>
+                        );
                         })}
-                        </TableRow>
-                    );
-                    })}
-                </TableBody>
-            </Table>
-            </TableContainer>
+                    </TableBody>
+                </Table>
+                </TableContainer>
 
-            <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={numberOfNeos}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-        </Paper>
+                <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={numberOfNeos}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+        </>
     );
 }
 
