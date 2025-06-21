@@ -10,6 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import TableSortLabel from '@mui/material/TableSortLabel';
 
 const columns = [
   { id: 'id', label: 'ID', minWidth: 100 },
@@ -49,11 +50,28 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos, loading }) => {
             String(value).toLowerCase().includes(searchTerm.toLowerCase())
         )
     );
-    
-    
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const [orderDirection, setOrderDirection] = React.useState('asc');
+    const [valueToOrderBy, setValueToOrderBy] = React.useState('');
+
+    const sortColumn = (property) => {
+        const isAsc = valueToOrderBy === property && orderDirection === 'asc';
+        setOrderDirection(isAsc ? 'desc' : 'asc');
+        setValueToOrderBy(property);
+    };
+
+    const sortDataInColumn = (rows, comparator) => {
+        return [...rows].sort(comparator);
+    };
+
+    const getComparator = (order, orderBy) => {
+        return order === 'desc'
+            ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
+            : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -103,15 +121,22 @@ const CustomTable = ({ retrievedNeoData, numberOfNeos, loading }) => {
                         <TableCell
                             key={column.id}
                             align={column.align}
-                            style={{ minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: "#f7f7f7" }}
+                            sortDirection={valueToOrderBy === column.id ? orderDirection : false}
+                            onClick={() => sortColumn(column.id)}
+                            style={{ cursor: 'pointer', minWidth: column.minWidth, fontWeight: 'bold', backgroundColor: "#f7f7f7" }}
                         >
-                            {column.label}
+                            <TableSortLabel
+                            active={valueToOrderBy === column.id}
+                            direction={valueToOrderBy === column.id ? orderDirection : 'asc'}
+                            >
+                                {column.label}
+                            </TableSortLabel>
                         </TableCell>
                         ))}
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                    {allRows
+                    {sortDataInColumn(allRows, getComparator(orderDirection, valueToOrderBy))
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row) => {
                         return (
