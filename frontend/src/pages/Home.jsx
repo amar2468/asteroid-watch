@@ -166,7 +166,7 @@ const Home = () => {
                     <PublicIcon fontSize="large" />
                 </Box>
 
-                <Typography variant="h3" align="center" sx={{ mt: 2, mb: 1 }}>
+                <Typography variant="h3" align="center" color="#0057AD;" sx={{ mt: 2, mb: 1 }}>
                     AsteroidWatch
                 </Typography>
 
