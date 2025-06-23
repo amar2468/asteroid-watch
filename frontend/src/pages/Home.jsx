@@ -19,14 +19,43 @@ import { useState } from 'react';
 // Importing Button from MUI
 import Button from '@mui/material/Button';
 
+// Import axios for making HTTP requests
 import axios from 'axios';
 
+// Custom table component for displaying NEO data
 import CustomTable from '../components/CustomTable';
 import Typography from '@mui/material/Typography';
 
+// Spinner component to indicate loading state
 import CircularProgress from '@mui/material/CircularProgress';
 
+// Component for displaying error alerts
 import Alert from '@mui/material/Alert';
+
+// Divider component for separating UI sections
+import Divider from '@mui/material/Divider';
+
+// Chart component for NEO count by date
+import NeoCountByDateChart from '../components/NeosPerDay';
+
+// Chart component for hazardous NEO proportions
+import HazardNeosPieChart from '../components/HazardNeosPieChart';
+
+// Chart showing top largest asteroids
+import TopLargestAsteroidsChart from '../components/LargestAsteroids';
+
+// Chart showing top fastest asteroids
+import TopFastestAsteroidsChart from '../components/FastestAsteroids';
+
+// Footer component for the page
+import Footer from '../components/Footer';
+
+// MUI icons used in the UI
+import PublicIcon from '@mui/icons-material/Public';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ScienceIcon from '@mui/icons-material/Science';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import SearchIcon from '@mui/icons-material/Search';
 
 // Home page definition
 const Home = () => {
@@ -103,7 +132,7 @@ const Home = () => {
                 { startDate: formattedStartDate, endDate: formattedEndDate}
             );
 
-            // If the data was successfully retrieved from the API, we will updat the state variable with the new information.
+            // If the data was successfully retrieved from the API, we will update the state variable with the new information.
             if (requestNeoData.status === 200) {
                 setRetrievedNeoData(requestNeoData.data.data);
             }
@@ -132,70 +161,149 @@ const Home = () => {
 
     return (
         <div>
-            <Typography variant="h4" align="center" sx={{ mt: 2, mb: 4 }}>
-                AsteroidWatch: Near-Earth Object Tracker
-            </Typography>
+            <Box display="flex" flexDirection="column" minHeight="100vh">
+                <Box textAlign="center" sx={{ mt: 2 }}>
+                    <PublicIcon fontSize="large" />
+                </Box>
 
-            {errorAlert}
+                <Typography variant="h3" align="center" sx={{ mt: 2, mb: 1 }}>
+                    AsteroidWatch
+                </Typography>
 
-            <Box display="flex" flexDirection="column" width="30%" sx={{ mt:15, mx: "auto" }}>
+                <Typography variant="h6" align="center" sx={{ mt: 2, mb: 2 }}>
+                    Near-Earth Object Tracker
+                </Typography>
 
-                {/* Set up the localization context so DatePicker uses dayjs */}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Select Start Date"
-
-                        value={selectedStartDate}
-
-                        onChange={(newDate) => changeNeoDate(newDate, "start")}
-
-                        sx={{ mb: 5 }}
-
-                        disabled={loading}
-                    />
-                </LocalizationProvider>
-
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker
-                        label="Select End Date"
-
-                        value={selectedEndDate}
-
-                        onChange={(newDate) => changeNeoDate(newDate, "end")}
-
-                        disabled={loading}
-                    />
-                </LocalizationProvider>
-
-                <Button
-                    variant="contained"
-
-                    size="large"
-
-                    color="primary"
-
-                    sx={{ mt: 5, mb: 5, borderRadius: "25px" }}
-
-                    onClick={searchForNeos}
-
-                    disabled={loading}
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    gap={4}
+                    sx={{ mt: 2, mb: 2 }}
                 >
-                    Search
-                </Button>
-            </Box>
-
-            {/* If the loading state variable is set to true, we will display the loading icon */}
-            {loading && (
-                <div>
-                    <Box display="flex" alignItems="center" flexDirection="column" sx={{ mx: "auto", mb: 5 }}>
-                        <CircularProgress />
+                    <Box display="flex" alignItems="center">
+                        <VisibilityIcon sx={{ mr: 1 }} />
+                        <Typography variant="subtitle1">Real-time Monitoring</Typography>
                     </Box>
-                </div>
-            )}
 
-            {/* If Near-Earth object data was present when the API call was made, we will display it in the table  */}
-            {retrievedNeoData && (
-                <>
+                    <Box display="flex" alignItems="center">
+                        <ScienceIcon sx={{ mr: 1 }} />
+                        <Typography variant="subtitle1">NASA Data</Typography>
+                    </Box>
+                </Box>
+
+                {errorAlert}
+
+                <Box display="flex" flexDirection="column" width="30%" sx={{ mt:10, mx: "auto", mb: 5 }}>
+
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    width="80%"
+                    sx={{ mx: "auto" }}
+                >
+
+                    {/* Start Date */}
+                    <Box sx={{ mb: 5 }}>
+                        <Typography display="flex" alignItems="center" sx={{ mb: 1 }}>
+                            <CalendarMonthIcon sx={{ mr: 1 }} />
+                            Start Date
+                        </Typography>
+                        
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                value={selectedStartDate}
+                                onChange={(newDate) => changeNeoDate(newDate, "start")}
+                                disabled={loading}
+                                sx={{ width: '100%' }}
+                            />
+                        </LocalizationProvider>
+                    </Box>
+
+                    {/* End Date */}
+                    <Box sx={{ mb: 5 }}>
+                        <Typography display="flex" alignItems="center" sx={{ mb: 1 }}>
+                            <CalendarMonthIcon sx={{ mr: 1 }} />
+                            End Date
+                        </Typography>
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                                value={selectedEndDate}
+                                onChange={(newDate) => changeNeoDate(newDate, "end")}
+                                disabled={loading}
+                                sx={{ width: '100%' }}
+                            />
+                        </LocalizationProvider>
+                    </Box>
+                </Box>
+
+                    <Button
+                        variant="contained"
+
+                        size="large"
+
+                        color="primary"
+
+                        sx={{ mt: 5, mb: 5, borderRadius: "25px" }}
+
+                        onClick={searchForNeos}
+
+                        disabled={loading}
+                    >
+                        <Box display="flex" alignItems="center">
+                            <SearchIcon sx={{ mr: 1 }} />
+                            <Typography>Search</Typography>
+                        </Box>
+                    </Button>
+                </Box>
+
+                <Divider />
+
+                {/* If the loading state variable is set to true, we will display the loading icon */}
+                {loading && (
+                    <div>
+                        <Box display="flex" alignItems="center" flexDirection="column" sx={{ mx: "auto", mb: 5, mt: 5 }}>
+                            <CircularProgress />
+                        </Box>
+                    </div>
+                )}
+
+                {/* If Near-Earth object data was present when the API call was made, we will display it in the table  */}
+                {retrievedNeoData && (
+                    <>
+                        <div>
+                            <Box display="flex" alignContent="center" flexDirection="column" sx={{ mx: "auto", mb: 5, mt: 5 }}>
+                                <Typography 
+                                    align="center"
+
+                                    variant="h6"
+                                >
+                                    Number of Near-Earth Objects: {retrievedNeoData.element_count}
+                                </Typography>
+                            </Box>
+
+                            <Box display="flex" alignContent="center" width="80%" flexDirection="column" sx={{ mx: "auto" }}>
+                                <CustomTable
+                                    retrievedNeoData={ retrievedNeoData.near_earth_objects }
+                                    numberOfNeos={ retrievedNeoData.element_count }
+                                    loading={ loading }
+                                />
+
+                                <NeoCountByDateChart rawNeoData={retrievedNeoData.near_earth_objects} />
+
+                                <HazardNeosPieChart rawNeoData={retrievedNeoData.near_earth_objects} />
+
+                                <TopLargestAsteroidsChart rawNeoData={retrievedNeoData.near_earth_objects} />
+
+                                <TopFastestAsteroidsChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                            </Box>
+                            
+                        </div>
+                    </>
+                )}
+
+                {retrievedNeoData === null &&(
                     <div>
                         <Box display="flex" alignContent="center" flexDirection="column" sx={{ mx: "auto", mb: 5 }}>
                             <Typography 
@@ -203,35 +311,14 @@ const Home = () => {
 
                                 variant="h6"
                             >
-                                Number of Near-Earth Objects: {retrievedNeoData.element_count}
+                                No data available
                             </Typography>
                         </Box>
-
-                        <Box display="flex" alignContent="center" width="80%" flexDirection="column" sx={{ mx: "auto" }}>
-                            <CustomTable
-                                retrievedNeoData={ retrievedNeoData.near_earth_objects }
-                                numberOfNeos={ retrievedNeoData.element_count }
-                                loading={ loading }
-                            />
-                        </Box>
-                        
                     </div>
-                </>
-            )}
+                )}
 
-            {retrievedNeoData === null &&(
-                <div>
-                    <Box display="flex" alignContent="center" flexDirection="column" sx={{ mx: "auto", mb: 5 }}>
-                        <Typography 
-                            align="center"
-
-                            variant="h6"
-                        >
-                            No data available
-                        </Typography>
-                    </Box>
-                </div>
-            )}
+                <Footer />
+            </Box>
         </div>
     );
 };
