@@ -35,7 +35,7 @@ const TopLargestAsteroidsChart = ({ rawNeoData }) => {
     labels,
     datasets: [
       {
-        label: 'Max Diameter (km)', // Label shown in the chart legend
+        label: 'Largest Asteroids - Top 5', // Label shown in the chart legend
         data: values,
         backgroundColor: '#ff9800', // Orange bars
       },

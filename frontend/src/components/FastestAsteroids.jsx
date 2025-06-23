@@ -36,7 +36,7 @@ const TopFastestAsteroidsChart = ({ rawNeoData }) => {
     labels,
     datasets: [
       {
-        label: 'Velocity (km/h)', // Chart legend label
+        label: 'Fastest Asteroids - Top 5', // Chart legend label
         data: values,
         backgroundColor: '#4caf50', // Bar colour
       },
