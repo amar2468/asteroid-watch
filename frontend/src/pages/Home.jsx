@@ -273,30 +273,46 @@ const Home = () => {
                 {retrievedNeoData && (
                     <>
                         <div>
-                            <Box display="flex" alignContent="center" flexDirection="column" sx={{ mx: "auto", mb: 5, mt: 5 }}>
-                                <Typography 
-                                    align="center"
-
-                                    variant="h6"
-                                >
-                                    Number of Near-Earth Objects: {retrievedNeoData.element_count}
-                                </Typography>
+                            <Box display="flex" alignContent="center" flexDirection="column" width="80%" sx={{ mx: "auto", mb: 5, mt: 5 }}>
+                                <div class="header">
+                                    <h1>Dashboard Overview</h1>
+                                    <p>Number of Near-Earth Objects: {retrievedNeoData.element_count}</p>
+                                </div>
                             </Box>
 
                             <Box display="flex" alignContent="center" width="80%" flexDirection="column" sx={{ mx: "auto" }}>
-                                <CustomTable
-                                    retrievedNeoData={ retrievedNeoData.near_earth_objects }
-                                    numberOfNeos={ retrievedNeoData.element_count }
-                                    loading={ loading }
-                                />
+                                <div class="table-section">
+                                    <div class="section-title">Near-Earth Objects - Data</div>
+                                    <CustomTable
+                                        retrievedNeoData={ retrievedNeoData.near_earth_objects }
+                                        numberOfNeos={ retrievedNeoData.element_count }
+                                        loading={ loading }
+                                    />
+                                </div>
 
-                                <NeoCountByDateChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                <div class="number-of-neos-chart-section">
+                                    <div class="number-of-neos-chart-title">Number of Near-Earth Objects Per Day</div>
 
-                                <HazardNeosPieChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                    <NeoCountByDateChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                </div>
 
-                                <TopLargestAsteroidsChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                <div class="hazardous-neos-chart-section">
+                                    <div class="hazardous-neos-chart-title">Hazardous/Non-Hazardous Near-Earth Objects</div>
 
-                                <TopFastestAsteroidsChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                    <HazardNeosPieChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                </div>
+
+                                <div class="largest-asteroids-chart-section">
+                                    <div class="largest-asteroids-chart-title">Largest Asteroids</div>
+
+                                    <TopLargestAsteroidsChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                </div>
+
+                                <div class="fastest-asteroids-chart-section">
+                                    <div class="fastest-asteroids-chart-title">Fastest Asteroids</div>
+
+                                    <TopFastestAsteroidsChart rawNeoData={retrievedNeoData.near_earth_objects} />
+                                </div>
                             </Box>
                             
                         </div>
